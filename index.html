@@ -1,42 +1,45 @@
 <!doctype html>
-<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
-<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Utilizando Session em JSP by hugonomura</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
-  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script type="text/javascript" src="javascripts/script.js"></script>
+  </head>
+  <body>
 
-  <title>Utilizando Session em JSP</title>
-  <meta name="description" content="Tutorial usando Session em JSP">
+      <header>
+        <h1>Utilizando Session em JSP</h1>
+        <p>Tutorial usando Session em JSP</p>
+      </header>
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+      <div id="banner">
+        <span id="logo"></span>
 
-</head>
-
-<body>
-
-  <div class="wrapper">
-    <header>
-      <h1 class="title">Utilizando Session em JSP</h1>
-    </header>
-    <div id="container">
-      <p class="tagline">Tutorial usando Session em JSP</p>
-      <div id="main" role="main">
-        <div class="download-bar">
-        <div class="inner">
-          <a href="https://github.com/hugonomura/tutorial-session/tarball/master" class="download-button tar"><span>Download</span></a>
-          <a href="https://github.com/hugonomura/tutorial-session/zipball/master" class="download-button zip"><span>Download</span></a>
-          <a href="https://github.com/hugonomura/tutorial-session" class="code">View Utilizando Session em JSP on GitHub</a>
+        <a href="https://github.com/hugonomura/tutorial-session" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/hugonomura/tutorial-session/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/hugonomura/tutorial-session/tarball/master" class="button">TAR</a></li>
+          </ul>
         </div>
-        <span class="blc"></span><span class="trc"></span>
-        </div>
-        <article class="markdown-body">
-          <h2>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h2>
 <a name="a-funcionalidade" class="anchor" href="#a-funcionalidade"><span class="octicon octicon-link"></span></a>A funcionalidade</h2>
 
 <p>Nesse tutorial iremos efetivamente criar a funcionalidade de login e, para isso, iremos utilizar <strong>Session</strong>.  </p>
@@ -57,25 +60,25 @@ Estamos utilizando <em>Session</em>, então precisamos gerar o <em>import</em> a
 <p>Agora, a mudança que devemos fazer é: ao invés de setar um atributo no <strong>request</strong> <code>request.setAttribute("usuarioBean", u);</code>, devemos setar esse atributo na <em>session</em>.<br>
 Para isso, devemos encontrar dentro do método <code>doPost</code>, o seguinte trecho de código, que indica que o login foi efetuado com sucesso.  </p>
 
-<pre><code>    if (senha.equals(u.getSenha())) {
-        // vincula bean
-        request.setAttribute("usuarioBean", u);
+<pre><code>if (senha.equals(u.getSenha())) {
+    // vincula bean
+    request.setAttribute("usuarioBean", u);
 
-        RequestDispatcher rd = null;
-        rd = request.getRequestDispatcher("/viewLogado.jsp");
-        rd.forward(request, response);
-    }
+    RequestDispatcher rd = null;
+    rd = request.getRequestDispatcher("/viewLogado.jsp");
+    rd.forward(request, response);
+}
 </code></pre>
 
 <p>Sendo que, podemos apagar a seguinte linha, conforme dito anteriormente.  </p>
 
-<pre><code>        request.setAttribute("usuarioBean", u);
+<pre><code>request.setAttribute("usuarioBean", u);
 </code></pre>
 
 <p>E, trocar por:  </p>
 
-<pre><code>        HttpSession session = request.getSession();
-        session.setAttribute("usuario", u);
+<pre><code>HttpSession session = request.getSession();
+session.setAttribute("usuario", u);
 </code></pre>
 
 <p>Assim, ao invés de setar uma variável em <em>request</em>, estaremos vinculando o objeto a session.  </p>
@@ -90,9 +93,9 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
 
 <p>Quanto a implementação da funcionalidade, não existem grande dificuldades também, basta recuperarmos a session do usuário, (passando <em>false</em> como parâmetro, afim de que a session seja duplicada) e removermos todos os atributos da session, deixando a implementação da seguinte forma:  </p>
 
-<pre><code>    HttpSession session = request.getSession(false);
-    session.invalidate();
-    response.sendRedirect("index.jsp");
+<pre><code>HttpSession session = request.getSession(false);
+session.invalidate();
+response.sendRedirect("index.jsp");
 </code></pre>
 
 <h2></h2>
@@ -103,25 +106,25 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
 <p>Como, ao conseguirmos cadastrar um novo usuário, nós também efetuamos login, é necessário realizar a devida alteração nesse controle também.<br>
 Para isso, basta encontrar o trecho de código que se refere ao cadastro bem sucedido de um novo usuário, dentro do método <code>doPost</code> (que é esse trecho abaixo).</p>
 
-<pre><code>    try {
-        UsuarioDAO uDAO = new UsuarioDAO();
-        uDAO.salvar(u);
-        request.setAttribute("usuarioBean",u);
-        RequestDispatcher rd = null;
-        rd = request.getRequestDispatcher("/viewLogado.jsp");
-        rd.forward(request, response);
-    }
+<pre><code>try {
+    UsuarioDAO uDAO = new UsuarioDAO();
+    uDAO.salvar(u);
+    request.setAttribute("usuarioBean",u);
+    RequestDispatcher rd = null;
+    rd = request.getRequestDispatcher("/viewLogado.jsp");
+    rd.forward(request, response);
+}
 </code></pre>
 
 <p>E, novamente, alterar a seguinte linha:  </p>
 
-<pre><code>    request.setAttribute("usuarioBean",u);
+<pre><code>request.setAttribute("usuarioBean",u);
 </code></pre>
 
 <p>Por:  </p>
 
-<pre><code>        HttpSession session = request.getSession();
-        session.setAttribute("usuario", u);
+<pre><code>HttpSession session = request.getSession();
+session.setAttribute("usuario", u);
 </code></pre>
 
 <p>Nossos <em>controles</em> que implementam a funcionalidade de login e logout já estão prontos. Agora, basta realizarmos as devidas alterações nas <em>views</em>.  </p>
@@ -134,56 +137,56 @@ Para isso, basta encontrar o trecho de código que se refere ao cadastro bem suc
 <p>Agora, vamos olhar nossa página <code>viewLogado</code> que era o local que o usuário era direcionado, assim que o login era efetuado com sucesso.<br>
 Teremos que alterar algumas coisas no menu (encontre o trecho de código abaixo).  </p>
 
-<pre><code>  &lt;nav id="menu"&gt;
-    &lt;ul&gt;
-        &lt;% 
-            Usuario objUsuarioBean = (Usuario)request.getAttribute("usuarioBean");
-            if (objUsuarioBean!=null){
-             if(objUsuarioBean.getUsuario().equals("adm")){
-          %&gt;
-        &lt;li&gt;&lt;a href="#.jsp" class="active"&gt;Autorização de usuário&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a href="#.jsp"&gt;Cadastro de Rotas&lt;/a&gt;&lt;/li&gt;
-        &lt;%
-             }else{
+<pre><code>&lt;nav id="menu"&gt;
+&lt;ul&gt;
+    &lt;% 
+        Usuario objUsuarioBean = (Usuario)request.getAttribute("usuarioBean");
+        if (objUsuarioBean!=null){
+         if(objUsuarioBean.getUsuario().equals("adm")){
+      %&gt;
+    &lt;li&gt;&lt;a href="#.jsp" class="active"&gt;Autorização de usuário&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#.jsp"&gt;Cadastro de Rotas&lt;/a&gt;&lt;/li&gt;
+    &lt;%
+         }else{
 
-             }
-            }
-        %&gt;
-    &lt;/ul&gt;
-  &lt;/nav&gt;
+         }
+        }
+    %&gt;
+&lt;/ul&gt;
+&lt;/nav&gt;
 </code></pre>
 
 <p>Como, alteramos a forma como passamos o <code>Usuario</code> para a view, devemos alterar também a forma de recuperação, trocando a seguinte linha:  </p>
 
-<pre><code>            Usuario objUsuarioBean = (Usuario)request.getAttribute("usuarioBean");
+<pre><code>Usuario objUsuarioBean = (Usuario)request.getAttribute("usuarioBean");
 </code></pre>
 
 <p>por...  </p>
 
-<pre><code>            Usuario objUsuarioBean = (Usuario)session.getAttribute("usuario");
+<pre><code>Usuario objUsuarioBean = (Usuario)session.getAttribute("usuario"); 
 </code></pre>
 
 <p>Já que, não estamos mais retornando o atributo em <code>request</code>, mas sim na <code>session</code>, e também alteramos o nome do atributo de <code>usuarioBean</code> para <code>usuario</code>.<br>
 Como, por enquanto estamos trabalhando apenas com usuários comuns do sistema, podemos alterar a seguinte linha também.  </p>
 
-<pre><code>             if(objUsuarioBean.getUsuario().equals("adm")){
+<pre><code>if(objUsuarioBean.getUsuario().equals("adm")){
 </code></pre>
 
 <p>por:  </p>
 
-<pre><code>             if(objUsuarioBean.getTipo().equals("user")){
+<pre><code>if(objUsuarioBean.getTipo().equals("user")){
 </code></pre>
 
 <p>Também podemos alterar o menu:  </p>
 
-<pre><code>        &lt;li&gt;&lt;a href="#.jsp" class="active"&gt;Autorização de usuário&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a href="#.jsp"&gt;Cadastro de Rotas&lt;/a&gt;&lt;/li&gt;
+<pre><code>&lt;li&gt;&lt;a href="#.jsp" class="active"&gt;Autorização de usuário&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#.jsp"&gt;Cadastro de Rotas&lt;/a&gt;&lt;/li&gt;
 </code></pre>
 
 <p>Por algo que realmente possamos navegar.  </p>
 
-<pre><code>        &lt;li&gt;&lt;a href="viewLogado.jsp" class="active"&gt;Inicio&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a href="EfetuaLogin"&gt;Sair&lt;/a&gt;&lt;/li&gt;
+<pre><code>&lt;li&gt;&lt;a href="viewLogado.jsp" class="active"&gt;Inicio&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="EfetuaLogin"&gt;Sair&lt;/a&gt;&lt;/li&gt;
 </code></pre>
 
 <p>Note que, como quando simplesmente chamamos o <em>servlet</em> <code>EfetuaLogin</code>, pela URL, estamos realizando um GET, não precisamos de um <em>form</em> para realizar o <em>logout</em>.  </p>
@@ -205,21 +208,21 @@ Clique com o <code>botão direito</code> sobre <em>Página da Web</em> &gt; <em>
 <p>Apague todo o conteúdo gerado pelo <em>Netbeans</em> no arquivo, deixando-o em branco.<br>
 Agora, iremos adicionar o seguinte código:  </p>
 
-<pre><code>    &lt;%@page import="model.Usuario"%&gt;
-    &lt;% 
-        HttpSession sessao = request.getSession();
-        Usuario u = (Usuario)sessao.getAttribute("usuario");
-        if(u == null){
-            response.sendRedirect("index.jsp");
-        }
-        %&gt;
+<pre><code>&lt;%@page import="model.Usuario"%&gt;
+&lt;% 
+    HttpSession sessao = request.getSession();
+    Usuario u = (Usuario)sessao.getAttribute("usuario");
+    if(u == null){
+        response.sendRedirect("index.jsp");
+    }
+    %&gt;
 </code></pre>
 
 <p>Onde, nós já realizamos o <em>import</em> de <code>Usuario</code> e verificamos se ele existe na sessão.  </p>
 
 <p>Para que as páginas sejam redirecionadas para a página inicial quando não houver um <code>usuario</code> na sessão, basta adicionarmos a seguinte linha no inicio dos arquivos que só devem ser acessadas quando o usuário estiver logado no sistema.  </p>
 
-<pre><code>      &lt;%@include file="logado.jsp"  %&gt;
+<pre><code>&lt;%@include file="logado.jsp"  %&gt;
 </code></pre>
 
 <p>No nosso caso, iremos incluir essa linha no arquivo <em>buscaCidade.jsp</em>, deixando-o da seguinte forma:  </p>
@@ -265,26 +268,13 @@ Agora, iremos adicionar o seguinte código:  </p>
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-        </article>
-      </div>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/hugonomura">hugonomura</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+      </footer>
     </div>
-    <footer>
-      <div class="owner">
-      <p><a href="https://github.com/hugonomura" class="avatar"><img src="https://secure.gravatar.com/avatar/aba3372625d61846c87c2f8b6cd50659?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="48" height="48"/></a> <a href="https://github.com/hugonomura">hugonomura</a> maintains <a href="https://github.com/hugonomura/tutorial-session">Utilizando Session em JSP</a></p>
-
-
-      </div>
-      <div class="creds">
-        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
-      </div>
-    </footer>
-  </div>
-  <div class="current-section">
-    <a href="#top">Scroll to top</a>
-    <a href="https://github.com/hugonomura/tutorial-session/tarball/master" class="tar">tar</a><a href="https://github.com/hugonomura/tutorial-session/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
-    <p class="name"></p>
-  </div>
-
-  
-</body>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
 </html>
