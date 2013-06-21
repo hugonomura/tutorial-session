@@ -57,7 +57,7 @@ Estamos utilizando <em>Session</em>, então precisamos gerar o <em>import</em> a
 <pre><code> import javax.servlet.http.HttpSession;
 </code></pre>
 
-<p>Agora, a mudança que devemos fazer é: ao invés de setar um atributo no <strong>request</strong> <code>request.setAttribute("usuarioBean", u);</code>, devemos setar esse atributo na <em>session</em>.<br>
+<p>Agora, a mudança que devemos fazer é: ao invés de setar um atributo no <strong>request</strong> <code>request.setAttribute("usuarioBean", u);</code>, devemos setar esse atributo na <strong>session</strong>.<br>
 Para isso, devemos encontrar dentro do método <code>doPost</code>, o seguinte trecho de código, que indica que o login foi efetuado com sucesso.  </p>
 
 <pre><code>if (senha.equals(u.getSenha())) {
@@ -81,7 +81,7 @@ Para isso, devemos encontrar dentro do método <code>doPost</code>, o seguinte t
 session.setAttribute("usuario", u);
 </code></pre>
 
-<p>Assim, ao invés de setar uma variável em <em>request</em>, estaremos vinculando o objeto a session.  </p>
+<p>Assim, ao invés de setar uma variável em <em>request</em>, estaremos vinculando o objeto a <em>session</em>.  </p>
 
 <p>Como iremos precisar realizar o logout também, podemos criar um método <em>doGet</em>, dentro de <em>EfetuaLogin</em>, onde iremos retirar o atributo <code>usuario</code> da <em>seession</em>, assim que o <em>servlet</em> receber uma requisição <em>get</em>.<br>
 A assinatura do método segue o mesmo padrão do método <code>doPost</code>, sendo que, apenas temos que alterar <code>doPost</code> para <code>doGet</code>, ficando da seguinte forma:  </p>
@@ -91,7 +91,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException 
 </code></pre>
 
-<p>Quanto a implementação da funcionalidade, não existem grande dificuldades também, basta recuperarmos a session do usuário, (passando <em>false</em> como parâmetro, afim de que a session seja duplicada) e removermos todos os atributos da session, deixando a implementação da seguinte forma:  </p>
+<p>Quanto a implementação da funcionalidade, não existem grande dificuldades também, basta recuperarmos a session do usuário, (passando <em>false</em> como parâmetro, pois o método irá retornar à sessão associada ao cliente, se ela já tiver sido criada, ou o valor <strong>null</strong>, caso contrário. Em outras palavras, o método <code>getSession(false)</code> nunca irá criar uma sessão, apenas retornar uma criada previamente) e removermos todos os atributos da session, deixando a implementação da seguinte forma:  </p>
 
 <pre><code>HttpSession session = request.getSession(false);
 session.invalidate();
@@ -271,7 +271,7 @@ Agora, iremos adicionar o seguinte código:  </p>
       </section>
       <footer>
         <p>Project maintained by <a href="https://github.com/hugonomura">hugonomura</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
